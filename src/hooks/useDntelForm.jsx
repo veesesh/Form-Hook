@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import DntelFormRenderer from "../components/DntelFormRenderer";
 
 export default function useDntelForm(initialData) {
   const sectionRefs = useRef({});
@@ -26,38 +25,15 @@ export default function useDntelForm(initialData) {
         ? prev.filter((key) => key !== sectionKey)
         : [...prev, sectionKey]
     );
-    setActiveSection(sectionKey); // mark the section as active
+    setActiveSection(sectionKey);
   };
 
-  if (!initialData || !initialData.sections) {
-    console.warn(
-      "useDntelForm: initialData is missing or invalid",
-      initialData
-    );
-    return {
-      FormComponent: () => <div> Invalid or empty form data</div>,
-    };
-  }
-
-  const FormComponent = () => (
-    <DntelFormRenderer
-      initialData={initialData}
-      sectionRefs={sectionRefs}
-      changes={changes}
-      changeValue={changeValue}
-      expandedSections={expandedSections}
-      toggleSection={toggleSection}
-      activeSection={activeSection}
-    />
-  );
-
   return {
-    FormComponent,
+    sectionRefs,
     changes,
     changeValue,
     expandedSections,
     toggleSection,
-    sectionRefs,
     activeSection,
   };
 }

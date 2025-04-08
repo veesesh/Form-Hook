@@ -7,10 +7,11 @@ export default function DntelFormRenderer({
   changeValue,
   expandedSections,
   toggleSection,
+  activeSection,
 }) {
   if (!initialData || !initialData.sections) {
     return (
-      <div className="text-red-600">⚠️ No sections found in initialData</div>
+      <div className="text-red-600">⚠️ No sections found in form data.</div>
     );
   }
 
@@ -25,7 +26,6 @@ export default function DntelFormRenderer({
         const filledFields = Object.entries(section.fields).filter(
           ([, field]) => changes[field.key]
         ).length;
-
         const totalFields = Object.keys(section.fields).length;
 
         return (
@@ -48,7 +48,6 @@ export default function DntelFormRenderer({
               <div className="mt-4 space-y-4">
                 {Object.entries(section.fields).map(([fieldKey, field]) => {
                   const value = changes[field.key] ?? "";
-
                   return (
                     <div key={field.key}>
                       <label
