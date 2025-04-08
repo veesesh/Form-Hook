@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-export default function useDntelForm(initialData) {
+export default function useDntelForm(initialData, id) {
   const sectionRefs = useRef({});
   const [changes, setChanges] = useState({});
   const [expandedSections, setExpandedSections] = useState([]);
@@ -8,11 +8,43 @@ export default function useDntelForm(initialData) {
   const [lastChanged, setLastChanged] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
+  const storageKey = `dntelFormData.${id}`;
+
+  // ⬇️ Load saved state from localStorage
   useEffect(() => {
-    if (initialData?.sections) {
+    if (!id) return;
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setChanges(parsed.changes || {});
+        setExpandedSections(parsed.expandedSections || []);
+        setActiveSection(parsed.activeSection || null);
+        setLastChanged(parsed.lastChanged || null);
+        setEditMode(parsed.editMode || false);
+      } catch (err) {
+        console.warn("⚠️ Failed to parse saved form data:", err);
+      }
+    } else if (initialData?.sections) {
       setExpandedSections(Object.keys(initialData.sections));
     }
-  }, [initialData]);
+  }, [id, initialData]);
+
+  // ⬇️ Save to localStorage on state change
+  useEffect(() => {
+    if (!id) return;
+    const dataToSave = {
+      changes,
+      expandedSections,
+      activeSection,
+      lastChanged,
+      editMode,
+    };
+    localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+
+    // Uncomment this for debugging:
+    // console.log("📦 Saved to localStorage:", dataToSave);
+  }, [id, changes, expandedSections, activeSection, lastChanged, editMode]);
 
   const changeValue = (key, value) => {
     setChanges((prev) => ({
@@ -27,13 +59,16 @@ export default function useDntelForm(initialData) {
       setExpandedSections(Object.keys(initialData.sections));
     }
   };
+
   const collapseAll = () => {
     setExpandedSections([]);
   };
+
   const expandSection = (id) => {
     setExpandedSections((prev) => (prev.includes(id) ? prev : [...prev, id]));
     setActiveSection(id);
   };
+
   const scrollToSection = (id) => {
     const el = sectionRefs.current[id];
     if (el?.scrollIntoView) {
@@ -41,30 +76,30 @@ export default function useDntelForm(initialData) {
       setActiveSection(id);
     }
   };
+
   const reset = () => {
     setChanges({});
     setLastChanged(null);
     setActiveSection(null);
     setExpandedSections([]);
     setEditMode(false);
+    localStorage.removeItem(storageKey);
   };
+
   const clearLS = () => {
-    localStorage.removeItem("dntelFormData"); // or "dntelFormData.{id}" if you have multiple
+    localStorage.removeItem(storageKey);
   };
-  // Already built-in because `setEditMode` is exposed directly
-  // You can also wrap it:
+
   const toggleEditMode = (enabled) => {
     setEditMode(enabled);
   };
 
   const toggleSection = (sectionKey) => {
-    setExpandedSections(
-      (prev) =>
-        prev.includes(sectionKey) && activeSection === sectionKey
-          ? [] // Collapse if already active
-          : [sectionKey] // Expand only this one
+    setExpandedSections((prev) =>
+      prev.includes(sectionKey) && activeSection === sectionKey
+        ? []
+        : [sectionKey]
     );
-
     setActiveSection((prev) => (prev === sectionKey ? null : sectionKey));
   };
 
@@ -84,7 +119,6 @@ export default function useDntelForm(initialData) {
     clearLS,
     toggleSection,
     toggleEditMode,
-
     sectionRefs,
   };
 }

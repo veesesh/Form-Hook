@@ -5,6 +5,7 @@ import DntelFormRenderer from "./components/DntelFormRenderer";
 
 function App() {
   const memoizedFormData = useMemo(() => formData, []);
+  const formId = "demo-form";
   const {
     sectionRefs,
     changes,
@@ -20,7 +21,7 @@ function App() {
     lastChanged,
     editMode,
     setEditMode,
-  } = useDntelForm(memoizedFormData);
+  } = useDntelForm(memoizedFormData, formId);
 
   return (
     <div className="p-8 space-y-6">
@@ -56,7 +57,7 @@ function App() {
         expandedSections={expandedSections}
         toggleSection={toggleSection}
         activeSection={activeSection}
-        editMode={editMode} // ✅ PASSED HERE
+        editMode={editMode}
       />
 
       <footer className="text-sm text-gray-500 pt-4 border-t">
@@ -73,7 +74,7 @@ function App() {
         </button>
         <button
           onClick={clearLS}
-          className="ml-2 px-3 py-1 bg-gray-100 border border-gray-400 rounded-md hover:bg-gray-200"
+          className="mt-2 px-3 py-1 bg-blue-100 border border-blue-400 rounded-md hover:bg-blue-200"
         >
           Clear LocalStorage
         </button>
