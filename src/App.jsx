@@ -4,7 +4,7 @@ import useDntelForm from "./hooks/useDntelForm";
 import DntelFormRenderer from "./components/DntelFormRenderer";
 
 function App() {
-  const memoizedFormData = useMemo(() => formData, []); // Only if dynamic
+  const memoizedFormData = useMemo(() => formData, []);
   const {
     sectionRefs,
     changes,
@@ -12,11 +12,42 @@ function App() {
     expandedSections,
     toggleSection,
     activeSection,
+    expandAll,
+    collapseAll,
+    scrollToSection,
+    reset,
+    clearLS,
+    lastChanged,
+    editMode,
+    setEditMode,
   } = useDntelForm(memoizedFormData);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Form you wanted</h1>
+    <div className="p-8 space-y-6">
+      <header className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-green-700">📋 Dntel Form</h1>
+        <div className="space-x-2">
+          <button
+            onClick={expandAll}
+            className="px-3 py-1 bg-green-100 border border-green-400 rounded-md hover:bg-green-200"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={collapseAll}
+            className="px-3 py-1 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200"
+          >
+            Collapse All
+          </button>
+          <button
+            onClick={reset}
+            className="px-3 py-1 bg-red-100 border border-red-400 rounded-md hover:bg-red-200"
+          >
+            Reset
+          </button>
+        </div>
+      </header>
+
       <DntelFormRenderer
         initialData={memoizedFormData}
         sectionRefs={sectionRefs}
@@ -25,7 +56,28 @@ function App() {
         expandedSections={expandedSections}
         toggleSection={toggleSection}
         activeSection={activeSection}
+        editMode={editMode} // ✅ PASSED HERE
       />
+
+      <footer className="text-sm text-gray-500 pt-4 border-t">
+        <div>
+          🕒 Last Changed:{" "}
+          {lastChanged ? new Date(lastChanged).toLocaleString() : "Never"}
+        </div>
+        <div>🛠️ Edit Mode: {editMode ? "Enabled" : "Disabled"}</div>
+        <button
+          onClick={() => setEditMode(!editMode)}
+          className="mt-2 px-3 py-1 bg-blue-100 border border-blue-400 rounded-md hover:bg-blue-200"
+        >
+          Toggle Edit Mode
+        </button>
+        <button
+          onClick={clearLS}
+          className="ml-2 px-3 py-1 bg-gray-100 border border-gray-400 rounded-md hover:bg-gray-200"
+        >
+          Clear LocalStorage
+        </button>
+      </footer>
     </div>
   );
 }

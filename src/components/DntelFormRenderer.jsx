@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function DntelFormRenderer({
   initialData,
   sectionRefs,
@@ -8,6 +6,7 @@ export default function DntelFormRenderer({
   expandedSections,
   toggleSection,
   activeSection,
+  editMode,
 }) {
   if (!initialData || !initialData.sections) {
     return (
@@ -65,8 +64,11 @@ export default function DntelFormRenderer({
                         type="text"
                         value={value}
                         placeholder={field.placeholder || ""}
+                        disabled={!editMode}
                         onChange={(e) => changeValue(field.key, e.target.value)}
-                        className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                        className={`mt-1 w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 ${
+                          !editMode ? "bg-gray-100 cursor-not-allowed" : ""
+                        }`}
                       />
                     </div>
                   );
