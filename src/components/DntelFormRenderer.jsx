@@ -32,7 +32,11 @@ export default function DntelFormRenderer({
           <div
             key={sectionKey}
             ref={(el) => (sectionRefs.current[sectionKey] = el)}
-            className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm"
+            className={`bg-gray-50 border ${
+              activeSection === sectionKey
+                ? "border-green-500"
+                : "border-gray-200"
+            } rounded-xl p-4 shadow-sm`}
           >
             <div
               className="flex justify-between items-center cursor-pointer"

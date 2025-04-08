@@ -18,14 +18,15 @@ export default function useDntelForm(initialData) {
       [key]: value,
     }));
   };
-
   const toggleSection = (sectionKey) => {
-    setExpandedSections((prev) =>
-      prev.includes(sectionKey)
-        ? prev.filter((key) => key !== sectionKey)
-        : [...prev, sectionKey]
+    setExpandedSections(
+      (prev) =>
+        prev.includes(sectionKey) && activeSection === sectionKey
+          ? [] // Collapse if already active
+          : [sectionKey] // Expand only this one
     );
-    setActiveSection(sectionKey);
+
+    setActiveSection((prev) => (prev === sectionKey ? null : sectionKey));
   };
 
   return {
