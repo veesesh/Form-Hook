@@ -6,7 +6,7 @@ export default function useDntelForm(initialData, id) {
   const [expandedSections, setExpandedSections] = useState([]);
   const [activeSection, setActiveSection] = useState(null);
   const [lastChanged, setLastChanged] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(true);
 
   const storageKey = `dntelFormData.${id}`;
 
@@ -20,12 +20,13 @@ export default function useDntelForm(initialData, id) {
         setExpandedSections(parsed.expandedSections || []);
         setActiveSection(parsed.activeSection || null);
         setLastChanged(parsed.lastChanged || null);
-        setEditMode(parsed.editMode || false);
+        setEditMode(parsed.editMode ?? true);
       } catch (err) {
         console.warn("⚠️ Failed to parse saved form data:", err);
       }
     } else if (initialData?.sections) {
       setExpandedSections(Object.keys(initialData.sections));
+      setEditMode(true);
     }
   }, [id, initialData]);
 
