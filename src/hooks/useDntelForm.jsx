@@ -10,7 +10,6 @@ export default function useDntelForm(initialData, id) {
 
   const storageKey = `dntelFormData.${id}`;
 
-  // ⬇️ Load saved state from localStorage
   useEffect(() => {
     if (!id) return;
     const saved = localStorage.getItem(storageKey);
@@ -30,7 +29,6 @@ export default function useDntelForm(initialData, id) {
     }
   }, [id, initialData]);
 
-  // ⬇️ Save to localStorage on state change
   useEffect(() => {
     if (!id) return;
     const dataToSave = {
@@ -42,7 +40,6 @@ export default function useDntelForm(initialData, id) {
     };
     localStorage.setItem(storageKey, JSON.stringify(dataToSave));
 
-    // Uncomment this for debugging:
     // console.log("📦 Saved to localStorage:", dataToSave);
   }, [id, changes, expandedSections, activeSection, lastChanged, editMode]);
 
